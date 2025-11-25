@@ -40,13 +40,13 @@ class OnboardingViewModel @Inject constructor() : ViewModel() {
 
     // 动物画像文案库：你提供的所有描述都在这里
     private val animalProfiles: Map<Animal, TravelBuddyProfile> = mapOf(
-        Animal.DOLPHIN to TravelBuddyProfile(Animal.DOLPHIN, "快乐社交家", "你喜欢热闹，乐于结交新朋友，并享受通过社交解决旅途中的种种问题。对你来说，分享的快乐远大于独享。", R.drawable.avatar_dolphin),
-        Animal.PANDA to TravelBuddyProfile(Animal.PANDA, "温和治愈者", "你偏爱悠闲的度假方式，享受在自然风光中品尝美食的惬意。与家人朋友的温馨时光是你旅行中不可或缺的部分。", R.drawable.avatar_panda),
-        Animal.BIRD to TravelBuddyProfile(Animal.BIRD, "自由探险家", "你向往远方和壮丽的自然风光，不希望被过于详细的计划束缚。享受独立，热衷于户外挑战，天空才是你的极限。", R.drawable.avatar_bird),
-        Animal.CAT to TravelBuddyProfile(Animal.CAT, "独立漫游者", "你钟情于城市的历史文化与艺术气息，享受一个人漫步在街头巷尾的独处时光。灵活的计划让你能随时拥抱不期而遇的惊喜。", R.drawable.avatar_cat),
-        Animal.DOG to TravelBuddyProfile(Animal.DOG, "忠诚同行者", "一份可靠的计划会让你充满安全感。你享受在团队活动中与伙伴们并肩协作，一同分享旅途的欢乐与挑战。", R.drawable.avatar_dog),
-        Animal.FOX to TravelBuddyProfile(Animal.FOX, "机智寻觅者", "你是一位天生的美食家和寻宝者，总能发现那些隐藏在深处的小众美味。灵活机智的你，善于把意外变成旅途中的精彩篇章。", R.drawable.avatar_fox),
-        Animal.ELEPHANT to TravelBuddyProfile(Animal.ELEPHANT, "博学规划家", "你是一位深度的文化爱好者，依赖周密的计划来探索目的地的历史与内涵，甚至会为所有意外情况准备好备选方案。", R.drawable.avatar_elephant)
+        Animal.DOLPHIN to TravelBuddyProfile(Animal.DOLPHIN, "快乐社交家", "你喜欢热闹，乐于结交新朋友，并享受通过社交解决旅途中的种种问题。对你来说，分享的快乐远大于独享。", R.drawable.avatar_dolphin,R.drawable.headimage_cat),
+        Animal.PANDA to TravelBuddyProfile(Animal.PANDA, "温和治愈者", "你偏爱悠闲的度假方式，享受在自然风光中品尝美食的惬意。与家人朋友的温馨时光是你旅行中不可或缺的部分。", R.drawable.avatar_panda,R.drawable.headimage_cat),
+        Animal.BIRD to TravelBuddyProfile(Animal.BIRD, "自由探险家", "你向往远方和壮丽的自然风光，不希望被过于详细的计划束缚。享受独立，热衷于户外挑战，天空才是你的极限。", R.drawable.avatar_bird,R.drawable.headimage_cat),
+        Animal.CAT to TravelBuddyProfile(Animal.CAT, "独立漫游者", "你钟情于城市的历史文化与艺术气息，享受一个人漫步在街头巷尾的独处时光。灵活的计划让你能随时拥抱不期而遇的惊喜。", R.drawable.avatar_cat,R.drawable.headimage_cat),
+        Animal.DOG to TravelBuddyProfile(Animal.DOG, "忠诚同行者", "一份可靠的计划会让你充满安全感。你享受在团队活动中与伙伴们并肩协作，一同分享旅途的欢乐与挑战。", R.drawable.avatar_dog,R.drawable.headimage_cat),
+        Animal.FOX to TravelBuddyProfile(Animal.FOX, "机智寻觅者", "你是一位天生的美食家和寻宝者，总能发现那些隐藏在深处的小众美味。灵活机智的你，善于把意外变成旅途中的精彩篇章。", R.drawable.avatar_fox,R.drawable.headimage_cat),
+        Animal.ELEPHANT to TravelBuddyProfile(Animal.ELEPHANT, "博学规划家", "你是一位深度的文化爱好者，依赖周密的计划来探索目的地的历史与内涵，甚至会为所有意外情况准备好备选方案。", R.drawable.avatar_elephant,R.drawable.headimage_cat)
     )
 
     init {

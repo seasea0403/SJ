@@ -44,10 +44,14 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 
 //----- Compose 核心运行时与状态管理 -----//
 import androidx.compose.runtime.Composable
@@ -519,37 +523,52 @@ fun ResultPage(profile: TravelBuddyProfile?, onNavigateToNaming: () -> Unit) {
         }
     }
 }
+// In: ui/onboarding/OnboardingScreen.kt
+
 @Composable
 fun NamingPage(profile: TravelBuddyProfile?, onConfirm: (String) -> Unit) {
     var name by remember { mutableStateOf("") }
 
     if (profile == null) {
+        // 加载状态保持不变
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
         return
     }
 
+    // 1. 整体布局：使用更接近设计的背景色，并调整内边距
     Column(
         Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .background(Color(0xFFFFFBF0)) // 使用米黄色背景
+            .padding(vertical = 140.dp, horizontal = 32.dp),  // 水平方向的内边距
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.height(60.dp))
-        Image(
-            painter = painterResource(id = profile.imageUrl),
-            contentDescription = profile.title,
+        Spacer(Modifier.height(80.dp))
+
+        // 2. 头像部分：使用Box实现绿色圆形背景和头像的层叠效果
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(100.dp)
-                .clip(CircleShape)
-                .background(Color(0xFF63E6BE))
-                .padding(8.dp)
-        )
+                .background(color = Color(0xFF34D399), shape = CircleShape) // 绿色圆形背景
+        ) {
+            Image(
+                // 确保使用正确的头像资源ID
+                painter = painterResource(id = profile.headUrl),
+                contentDescription = profile.title,
+                modifier = Modifier.size(90.dp) // 头像图片比背景略小，形成边框
+            )
+        }
+
         Spacer(Modifier.height(32.dp))
+
+        // 3. 文本部分：字体加粗，更醒目
         Text(
             "快为你的新搭子取个专属名字吧！",
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
         )
         Spacer(Modifier.height(8.dp))
         Text(
@@ -558,22 +577,50 @@ fun NamingPage(profile: TravelBuddyProfile?, onConfirm: (String) -> Unit) {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(48.dp))
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("例如: 小橘、阿旺、Luna...") },
+
+        // 4. 输入框：用Surface + TextField替换OutlinedTextField，实现卡片效果
+        Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            singleLine = true
-        )
-        Spacer(Modifier.weight(1f))
+            color = Color.White,
+            shadowElevation = 4.dp // 添加轻微的阴影
+        ) {
+            TextField(
+                value = name,
+                onValueChange = { name = it },
+                modifier = Modifier.fillMaxWidth(),
+                // 使用placeholder而不是label
+                placeholder = {
+                    Text(
+                        "例如: 小橘、阿旺、Luna...",
+                        modifier = Modifier.fillMaxWidth(), // 让placeholder也居中
+                        textAlign = TextAlign.Center
+                    )
+                },
+                singleLine = true,
+                // 将输入文本居中
+                textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
+                // 自定义颜色，使其透明，无下划线
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    disabledContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                )
+            )
+        }
+
+        Spacer(Modifier.height(24.dp))// 这个Spacer会把下面的按钮推到底部
+
+        // 5. 按钮：添加底部外边距，让它和屏幕边缘保持距离
         Button(
             onClick = { onConfirm(name) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
             shape = RoundedCornerShape(25.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFD966)),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEFBF35)),
             enabled = name.isNotBlank()
         ) {
             Text("开始旅程", color = Color.Black)

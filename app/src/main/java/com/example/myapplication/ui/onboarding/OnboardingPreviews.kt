@@ -22,7 +22,8 @@ val mockProfile = TravelBuddyProfile(
     animal = Animal.CAT,
     title = "独立漫游者",
     description = "充满好奇心，享受独处，钟情于城市文化艺术的优雅漫游者",
-    imageUrl = R.drawable.avatar_cat
+    imageUrl = R.drawable.avatar_cat,
+    headUrl = R.drawable.headimage_cat
 )
 
 val mockQuestion = Question(

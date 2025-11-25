@@ -11,6 +11,7 @@ data class TravelBuddyProfile(
     val title: String,         // 例如："快乐社交家"
     val description: String,   // 详细描述
     val imageUrl: Int          // 图片在drawable中的资源ID, 例如: R.drawable.avatar_cat
+   // val headimage: Int          //后续会用到的头部画像
 )
 
 // 一个问题和它的所有选项

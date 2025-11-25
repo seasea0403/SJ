@@ -83,7 +83,7 @@ class OnboardingViewModel @Inject constructor() : ViewModel() {
 
     private fun calculateResult(): TravelBuddyProfile {
         val finalScores = mutableMapOf<Animal, Int>()
-        Animal.values().forEach { finalScores[it] = 0 }
+        Animal.entries.forEach { finalScores[it] = 0 }
 
         _uiState.value.userAnswers.values.forEach { answerId ->
             scoringMatrix[answerId]?.forEach { (animal, score) ->
@@ -112,9 +112,9 @@ class OnboardingViewModel @Inject constructor() : ViewModel() {
 
             // 问题二：计划风格
             Question(2, "面对一份详细到分钟的旅行计划表,你的第一感觉是?", listOf(
-                AnswerOption("2-A", "太棒了! 一切尽在掌握,让我充满安全感。"),
-                AnswerOption("2-B", "有点压力,我更喜欢只定下大致方向,随缘探索。"),
-                AnswerOption("2-C", "束缚感太强,最好的风景总是在计划之外。")
+                AnswerOption("2-A", "太棒了! 一切尽在掌握, 让我充满安全感。",R.drawable.q1),
+                AnswerOption("2-B", "有点压力, 我更喜欢只定下大致方向, 随缘探索。",R.drawable.q2),
+                AnswerOption("2-C", "束缚感太强, 最好的风景总是在计划之外。",R.drawable.q3)
             )),
 
             // 问题三：社交倾向

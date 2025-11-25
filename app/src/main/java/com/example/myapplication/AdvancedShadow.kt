@@ -1,6 +1,5 @@
-package ai.codia.x.composeui.demo
+package com.example.myapplication
 
-import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color

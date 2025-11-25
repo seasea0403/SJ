@@ -2,6 +2,7 @@ package com.example.myapplication.ui.onboarding
 //----- 基础UI元素与布局 (Foundation & Layout) -----//
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,11 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 
 //----- Material Design 3 风格组件 -----//
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -37,7 +43,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 //----- UI 通用修饰符、对齐、资源等 -----//
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
@@ -52,22 +61,19 @@ import com.example.myapplication.R // 导入资源文件，用于图片等
 import com.example.myapplication.ui.onboarding.data.Question
 import com.example.myapplication.ui.onboarding.data.TravelBuddyProfile
 //----- UI 通用修饰符、对齐、资源等 -----//
-// ... (其他 imports)
-import androidx.compose.ui.tooling.preview.Preview // 导入 Preview 注解
-import com.example.myapplication.ui.theme.MyApplicationTheme // 导入你的App主题
-// ...
+
 
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
-    onOnboardingComplete: () -> Unit, // 用于导航到App主页的回调
+    onOnboardingComplete: () -> Unit, // 用于导航到App主页的回调，说明完成引导
     viewModel: OnboardingViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()//只要 ViewModel 里的 uiState 有任何更新，Compose 就会自动、智能地重绘使用到 uiState 的部分。
     val questions = uiState.questions
-    // Pager总页数 = 问题数 + 生成等待页 + 结果命名页
-    val pageCount = if (questions.isEmpty()) 0 else questions.size + 2
+    // Pager总页数 = 问题数 + 生成等待页1 + 结果显示和命名页2
+    val pageCount = if (questions.isEmpty()) 0 else questions.size + 3//一个选择
     val pagerState = rememberPagerState { pageCount }
     val coroutineScope = rememberCoroutineScope()
 
@@ -79,7 +85,7 @@ fun OnboardingScreen(
         }
     }
 
-    Scaffold(
+    Scaffold(//屏幕布局
         topBar = {
             // 只在问题页面显示进度条
             if (pagerState.currentPage < questions.size) {
@@ -123,8 +129,20 @@ fun OnboardingScreen(
                     GeneratingPage()
                 }
                 // 搭子生成与命名页面
+
                 pageIndex == questions.size + 1 -> {
-                    ResultAndNamePage(
+                    ResultPage(
+                        profile = uiState.generatedProfile,
+                        onNavigateToNaming = { // 点击“为TA取个名字”按钮后
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(pageIndex + 1)
+                            }
+                        }
+                    )
+                }
+                // (新) 搭子取名页面
+                pageIndex == questions.size + 2 -> {
+                    NamingPage(
                         profile = uiState.generatedProfile,
                         onConfirm = { name ->
                             viewModel.onBuddyNamedAndConfirm(name)
@@ -153,42 +171,149 @@ fun QuestionPage(question: Question, onAnswerSelected: (String) -> Unit) {
 
 @Composable
 fun GeneratingPage() {
-    // 根据你的“生成等待”页面设计，可以放一个动画 (Lottie) 或者简单的文本
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            // CircularProgressIndicator()
-            Text("正在生成你的专属搭子...", style = MaterialTheme.typography.titleMedium)
+            // 假设你的星星图标资源是 R.drawable.ic_generating_star
+            Image(
+                painter = painterResource(id = R.drawable.image_33212),
+                contentDescription = null
+            )
+            Spacer(Modifier.height(16.dp))
+            Text(
+                "正在生成你的专属搭子...", // 你可以加上...的动画效果
+                style = MaterialTheme.typography.titleMedium
+            )
         }
     }
 }
 
 @Composable
-fun ResultAndNamePage(profile: TravelBuddyProfile?, onConfirm: (String) -> Unit) {
-    var name by remember { mutableStateOf("") }
-
-    // 在profile为null时（即刚进入页面，计算还未完成），可以显示加载动画
+fun ResultPage(profile: TravelBuddyProfile?, onNavigateToNaming: () -> Unit) {
+    // profile为null时显示加载中
     if (profile == null) {
-        GeneratingPage()
+        // 可以用同一个GeneratingPage，或者一个更简单的加载动画
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
         return
     }
 
-    // 根据你的“搭子生成”和“搭子取名”页面设计UI
     Column(
-        Modifier.fillMaxSize().padding(24.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Image(painter = painterResource(id = profile.imageUrl), contentDescription = profile.title)
-        Text(profile.title, style = MaterialTheme.typography.titleLarge)
-        Text(profile.description, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(40.dp))
+        // 头像
+        Image(
+            painter = painterResource(id = profile.imageUrl),
+            contentDescription = profile.title,
+            modifier = Modifier.size(180.dp) // 调整大小
+        )
+        Spacer(Modifier.height(24.dp))
 
-        Text("快为你的新搭子取个专属名字吧！")
-        OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("例如: 小橘, Luna...") })
+        // 称号 (带星星✨)
+        Text(
+            text = "✨ ${profile.title} ✨",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
         Spacer(Modifier.height(16.dp))
 
-        Button(onClick = { onConfirm(name) }) {
-            Text("完成")
+        // 描述
+        Text(
+            profile.description,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+
+        Spacer(Modifier.weight(1f)) // 将按钮推到底部
+
+        // 按钮
+        Button(
+            onClick = onNavigateToNaming,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = RoundedCornerShape(25.dp),
+            // 使用你的主题颜色
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFD966))
+        ) {
+            Text("为TA取个名字", color = Color.Black)
+        }
+    }
+}
+@Composable
+fun NamingPage(profile: TravelBuddyProfile?, onConfirm: (String) -> Unit) {
+    var name by remember { mutableStateOf("") }
+
+    if (profile == null) {
+        // 正常不会出现，因为ResultPage已经处理了null的情况
+        // 但作为防御性编程，保留加载状态
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(Modifier.height(60.dp))
+
+        // 小圆形头像
+        Image(
+            painter = painterResource(id = profile.imageUrl),
+            contentDescription = profile.title,
+            modifier = Modifier
+                .size(100.dp)
+                .clip(CircleShape) // 裁切成圆形
+                .background(Color(0xFF63E6BE)) // 添加绿色背景
+                .padding(8.dp) // 留出内边距
+        )
+        Spacer(Modifier.height(32.dp))
+
+        Text(
+            "快为你的新搭子取个专属名字吧！",
+            style = MaterialTheme.typography.titleLarge
+        )
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "这个名字将陪伴你所有的旅程",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(48.dp))
+
+        // 输入框
+        OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("例如: 小橘、阿旺、Luna...") },
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            singleLine = true
+        )
+
+        Spacer(Modifier.weight(1f)) // 占满剩余空间，把按钮推到底部
+
+        // 完成按钮
+        Button(
+            onClick = { onConfirm(name) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            shape = RoundedCornerShape(25.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFD966)),
+            // 当用户未输入名字时，按钮不可用
+            enabled = name.isNotBlank()
+        ) {
+            Text("开始旅程", color = Color.Black)
         }
     }
 }

@@ -30,9 +30,9 @@ val mockQuestion = Question(
     id = 2,
     text = "面对一份详细到分钟的旅行计划表, 你的第一感觉是?",
     options = listOf(
-        AnswerOption("2-A", "太棒了! 一切尽在掌握, 让我充满安全感。",R.drawable.q1),
-        AnswerOption("2-B", "有点压力, 我更喜欢只定下大致方向, 随缘探索。",R.drawable.q2),
-        AnswerOption("2-C", "束缚感太强, 最好的风景总是在计划之外。",R.drawable.q3)
+        AnswerOption("2-A", "太棒了! 一切尽在掌握, 让我充满安全感。",R.drawable.icon_candy),
+        AnswerOption("2-B", "有点压力, 我更喜欢只定下大致方向, 随缘探索。",R.drawable.icon_clock),
+        AnswerOption("2-C", "束缚感太强, 最好的风景总是在计划之外。",R.drawable.icon_clock)
     )
 )
 

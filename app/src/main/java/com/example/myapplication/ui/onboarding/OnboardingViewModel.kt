@@ -104,38 +104,38 @@ class OnboardingViewModel @Inject constructor() : ViewModel() {
         val allQuestions = listOf(
             // 问题一：核心兴趣焦点
             Question(1, "一场完美的旅行,你最期待的核心体验是?", listOf(
-                AnswerOption("1-A", "穿梭于博物馆与历史古迹,感受时间的沉淀。"),
-                AnswerOption("1-B", "深入市井小巷,用味蕾探索地道美食的秘密。"),
-                AnswerOption("1-C", "远离尘嚣,在壮丽的自然风光中彻底放空自己。"),
-                AnswerOption("1-D", "参加热闹的节庆或派对,与来自世界各地的朋友举杯。")
+                AnswerOption("1-A", "穿梭于博物馆与历史古迹,感受时间的沉淀。",R.drawable.icon_house),
+                AnswerOption("1-B", "深入市井小巷,用味蕾探索地道美食的秘密。",R.drawable.icon_noodles),
+                AnswerOption("1-C", "远离尘嚣,在壮丽的自然风光中彻底放空自己。",R.drawable.icon_flower),
+                AnswerOption("1-D", "参加热闹的节庆或派对,与来自世界各地的朋友举杯。",R.drawable.icon_wine)
             )),
 
             // 问题二：计划风格
             Question(2, "面对一份详细到分钟的旅行计划表,你的第一感觉是?", listOf(
-                AnswerOption("2-A", "太棒了! 一切尽在掌握, 让我充满安全感。",R.drawable.q1),
-                AnswerOption("2-B", "有点压力, 我更喜欢只定下大致方向, 随缘探索。",R.drawable.q2),
-                AnswerOption("2-C", "束缚感太强, 最好的风景总是在计划之外。",R.drawable.q3)
+                AnswerOption("2-A", "太棒了! 一切尽在掌握, 让我充满安全感。",R.drawable.icon_notes),
+                AnswerOption("2-B", "有点压力, 我更喜欢只定下大致方向, 随缘探索。",R.drawable.icon_clock),
+                AnswerOption("2-C", "束缚感太强, 最好的风景总是在计划之外。",R.drawable.icon_grass)
             )),
 
             // 问题三：社交倾向
             Question(3, "你理想中的旅行团队配置是?", listOf(
-                AnswerOption("3-A", "一个人或与最亲密的伙伴,享受不被打扰的二人世界。"),
-                AnswerOption("3-B", "和家人或三五好友组成小团体,温馨而自在。"),
-                AnswerOption("3-C", "乐于加入一个更大的团队,结识有趣的新朋友。")
+                AnswerOption("3-A", "一个人或与最亲密的伙伴,享受不被打扰的二人世界。",R.drawable.icon_candy),
+                AnswerOption("3-B", "和家人或三五好友组成小团体,温馨而自在。",R.drawable.icon_sushi),
+                AnswerOption("3-C", "乐于加入一个更大的团队,结识有趣的新朋友。",R.drawable.icon_dialogtext)
             )),
 
             // 问题四：冒险程度与活动偏好
             Question(4, "在目的地,你更倾向于如何度过一天?", listOf(
-                AnswerOption("4-A", "在海边躺椅或舒适的咖啡馆里,悠闲地度过一整天。"),
-                AnswerOption("4-B", "用脚步丈量城市,不设目的地,在街头随心漫步。"),
-                AnswerOption("4-C", "挑战一项刺激的户外运动,比如徒步、潜水或登山。")
+                AnswerOption("4-A", "在海边躺椅或舒适的咖啡馆里,悠闲地度过一整天。",R.drawable.icon_cup),
+                AnswerOption("4-B", "用脚步丈量城市,不设目的地,在街头随心漫步。",R.drawable.icon_hat),
+                AnswerOption("4-C", "挑战一项刺激的户外运动,比如徒步、潜水或登山。",R.drawable.icon_heart)
             )),
 
             // 问题五：旅行态度与问题解决方式
             Question(5, "当发现一个攻略上极力推荐的餐厅关门了,你会怎么做?", listOf(
-                AnswerOption("5-A", "立刻拿出手机,根据之前的备选方案,找到下一家。"),
-                AnswerOption("5-B", "抓住路过的当地人,让他推荐一个私藏的宝藏小馆。"),
-                AnswerOption("5-C", "随遇而安,就在附近随便找一家看起来顺眼的进去试试。")
+                AnswerOption("5-A", "立刻拿出手机,根据之前的备选方案,找到下一家。",R.drawable.icon_photos),
+                AnswerOption("5-B", "抓住路过的当地人,让他推荐一个私藏的宝藏小馆。",R.drawable.icon_diary),
+                AnswerOption("5-C", "随遇而安,就在附近随便找一家看起来顺眼的进去试试。",R.drawable.icon_cloud)
             ))
         )
         _uiState.update { it.copy(questions = allQuestions) }

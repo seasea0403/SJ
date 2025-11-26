@@ -62,6 +62,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.hilt.navigation.compose.hiltViewModel
 
 
@@ -88,6 +89,8 @@ import com.example.myapplication.R // 导入资源文件，用于图片等
 import com.example.myapplication.ui.onboarding.data.AnswerOption
 import com.example.myapplication.ui.onboarding.data.Question
 import com.example.myapplication.ui.onboarding.data.TravelBuddyProfile
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.joinAll
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -155,7 +158,30 @@ fun OnboardingScreen(
                         }
                     )
                 }
-                pageIndex == questions.size -> GeneratingPage()
+                pageIndex == questions.size -> {
+                    GeneratingPage()
+
+                    LaunchedEffect(Unit) {
+                        // 同时启动两个“任务”
+                        val timerJob = launch { delay(3000L) } // 任务1: 保证至少显示3秒
+                        val dataJob = launch {
+                            // 任务2: 等待 profile 数据准备好
+                            // snapshotFlow 会将 Compose State 转换成一个 Flow
+                            // .first 会一直等待，直到满足条件 { it != null }
+                            snapshotFlow { uiState.generatedProfile }
+                                .first { profile -> profile != null }
+                        }
+
+                        // 等待上面两个任务全部完成
+                        joinAll(timerJob, dataJob)
+
+                        // 两个条件都满足后，才执行导航
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(pageIndex + 1)
+                        }
+                    }
+                }
+
                 pageIndex == questions.size + 1 -> ResultPage(
                     profile = uiState.generatedProfile,
                     onNavigateToNaming = {
@@ -181,7 +207,7 @@ fun OnboardingTopBar(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp) // 给状态栏留出一些空间
+            .padding(top = 25.dp) // 给状态栏留出一些空间
     ) {
         // 返回按钮
         IconButton(onClick = onBackClicked) {
@@ -239,7 +265,7 @@ fun QuestionPage(question: Question, onAnswerSelected: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 24.dp), // 统一的水平边距
+            .padding(horizontal = 30.dp,vertical = 30.dp), // 统一的水平边距
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(60.dp)) // 使用 Spacer 控制垂直间距
@@ -251,7 +277,7 @@ fun QuestionPage(question: Question, onAnswerSelected: (String) -> Unit) {
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        Spacer(Modifier.height(48.dp)) // 题目和选项之间的间距
+        Spacer(Modifier.height(65.dp)) // 题目和选项之间的间距
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),

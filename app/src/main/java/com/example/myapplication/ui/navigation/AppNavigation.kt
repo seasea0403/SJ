@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.ui.auth.LoginScreen
+import com.example.myapplication.ui.onboarding.OnboardingScreen
 
 @Composable
 fun AppNavigation() {
@@ -28,7 +30,8 @@ fun AppNavigation() {
         // 登录页
         composable(Routes.LOGIN) {
             LoginScreen(
-                onLoginSuccess = {
+                // ✅ 修改后的代码
+                onNavigateToOnboarding = {
                     // 登录成功后，跳转到问卷流程，并清空登录页的返回栈
                     navController.navigate(Routes.ONBOARDING) {
                         popUpTo(Routes.LOGIN) { inclusive = true }
@@ -62,12 +65,3 @@ fun MainScreen() {
     TODO("Not yet implemented")
 }
 
-@Composable
-fun OnboardingScreen(onOnboardingComplete: () -> Unit) {
-    TODO("Not yet implemented")
-}
-
-@Composable
-fun LoginScreen(onLoginSuccess: () -> Unit) {
-    TODO("Not yet implemented")
-}

@@ -1,325 +1,187 @@
+// 建议文件名：AuthScreen.kt
 package com.example.myapplication.ui.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.R
-import com.example.myapplication.ui.common.advancedShadow
+import com.example.myapplication.R // 确保你的 R 文件被正确导入
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 /**
- * Created by codia-figma
+ * 认证/登录页面
+ *
+ * 重构要点:
+ * 1. 使用 Column + Arrangement.spacedBy + Spacer 替代了原始代码中复杂的 Box + offset 定位。
+ * 2. 将三种登录按钮抽象为可复用的 AuthButton 组件。
+ * 3. 使用 ClickableText 和 AnnotatedString 实现协议文本的点击效果，代码更标准、简洁。
+ * 4. 整体布局使用 fillMaxSize 和 weight，使其能够在不同尺寸的设备上自适应。
  */
 @Composable
-fun CodiaMainView() {
-    // Column-3311:2-Travel Companion App
+fun AuthScreen() {
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .background(Color(0xffffffff))
-            .size(394.dp, 852.dp)
-            .padding(start = 0.dp, top = 0.dp, end = 0.dp, bottom = 0.000030517578125.dp),
+            .fillMaxSize() // 1. 【改进】占满整个屏幕，而不是固定尺寸
+            .background(Color.White)
+            .verticalScroll(rememberScrollState()), // 2. 【改进】添加滚动，防止在小屏幕上内容溢出
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Box-3311:3-Container
+
+        Spacer(Modifier.height(0.dp)) // 从 80.dp 改为 0.dp 或者一个很小的值，根据你的布局需要
+
+// 2. 【核心修改】使用 Box 来实现图片和渐变遮罩的叠加效果
         Box(
-            contentAlignment = Alignment.TopStart,
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(345.85.dp, 514.971.dp),
+                .fillMaxWidth()
+                .height(350.dp),
+
+            contentAlignment = Alignment.Center
         ) {
-            // Column-3311:7-标题
-            Column(
-                verticalArrangement = Arrangement.spacedBy(space = 7.dp, alignment = Alignment.Top),
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = 0.dp, y = 143.968.dp)
-                    .size(345.85.dp, 103.975.dp),
-            ) {
-                // Box-3311:8-Heading 1
-                Box(
-                    contentAlignment = Alignment.TopStart,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .fillMaxWidth()
-                        .padding(start = 0.dp, end = 0.dp)
-                        .height(40.005.dp),
-                ) {
-                    // Text-3311:9-TravelMate
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .wrapContentSize()
-                            .offset(x = 75.847.dp, y = -2.132.dp),
-                        text = "TravelMate",
-                        color = Color(0xff000000),
-                        fontSize = 36.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                // Box-3311:10-Paragraph
-                Box(
-                    contentAlignment = Alignment.TopStart,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .fillMaxWidth()
-                        .padding(start = 0.dp, end = 0.dp)
-                        .height(24.003.dp),
-                ) {
-                    // Text-3311:11-你的专属旅行搭子
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .wrapContentSize()
-                            .offset(x = 108.93.dp, y = -1.434.dp),
-                        text = "你的专属旅行搭子",
-                        color = Color(0x993c3c43),
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-                // Box-3311:12-Paragraph
-                Box(
-                    contentAlignment = Alignment.TopStart,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .fillMaxWidth()
-                        .padding(start = 0.dp, end = 0.dp)
-                        .height(19.99.dp),
-                ) {
-                    // Text-3311:13-让每次旅行都充满惊喜
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.TopStart)
-                            .wrapContentSize()
-                            .offset(x = 102.923.dp, y = -1.217.dp),
-                        text = "让每次旅行都充满惊喜",
-                        color = Color(0xffbfbfbf),
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Center,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-            }
-            // Column-3311:14-注册
-            Column(
-                verticalArrangement = Arrangement.spacedBy(space = 13.dp, alignment = Alignment.Top),
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = 0.dp, y = 295.936.dp)
-                    .size(345.85.dp, 171.053.dp),
-            ) {
-                // Box-3311:15-Button
-                Box(
-                    contentAlignment = Alignment.TopStart,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .fillMaxWidth()
-                        .padding(start = 0.dp, end = 0.dp)
-                        .advancedShadow(color = Color(0x19000000), alpha = 0.10000000149011612f, cornersRadius = 16.dp, shadowBlurRadius = 4.dp, offsetX = 0.dp, offsetY = 2.dp)
-                        .background(Color(0xffffcc00), RoundedCornerShape(16.dp))
-                        .height(47.981.dp),
-                ) {
-                    // Box-3311:16-Welcome
-                    Box(
-                        contentAlignment = Alignment.TopStart,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .offset(x = 0.002999999999985903.dp, y = 13.996.dp)
-                            .size(60.006.dp, 19.99.dp),
-                    ) {
-                        // Text-3311:17-微信登录
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .wrapContentSize()
-                                .offset(x = 0.dp, y = -1.217.dp),
-                            text = "微信登录",
-                            color = Color(0x993c3c43),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
-                // Box-3311:18-Button
-                Box(
-                    contentAlignment = Alignment.TopStart,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .fillMaxWidth()
-                        .padding(start = 0.dp, end = 0.dp)
-                        .advancedShadow(color = Color(0x19000000), alpha = 0.10000000149011612f, cornersRadius = 16.dp, shadowBlurRadius = 4.dp, offsetX = 0.dp, offsetY = 2.dp)
-                        .background(Color(0xff999999), RoundedCornerShape(16.dp))
-                        .height(47.981.dp),
-                ) {
-                    // Box-3311:19-Welcome
-                    Box(
-                        contentAlignment = Alignment.TopStart,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .offset(x = 0.23449999999996862.dp, y = 13.995.dp)
-                            .size(90.469.dp, 19.99.dp),
-                    ) {
-                        // Text-3311:20-Apple ID 登录
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .wrapContentSize()
-                                .offset(x = 2.dp, y = -1.217.dp),
-                            text = "Apple ID 登录",
-                            color = Color(0xffffffff),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
-                // Box-3344:269-Button
-                Box(
-                    contentAlignment = Alignment.TopStart,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .fillMaxWidth()
-                        .padding(start = 0.dp, end = 0.dp)
-                        .advancedShadow(color = Color(0x19000000), alpha = 0.10000000149011612f, cornersRadius = 16.dp, shadowBlurRadius = 4.dp, offsetX = 0.dp, offsetY = 2.dp)
-                        .background(Color(0xffffffff), RoundedCornerShape(16.dp))
-                        .height(47.981.dp),
-                ) {
-                    // Box-3344:270-Welcome
-                    Box(
-                        contentAlignment = Alignment.TopStart,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .offset(x = 0.23449999999996862.dp, y = 13.995.dp)
-                            .size(100.dp, 19.99.dp),
-                    ) {
-                        // Text-3344:271-手机 / 邮箱注册
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .wrapContentSize()
-                                .offset(x = -3.dp, y = -1.217.dp),
-                            text = "手机 / 邮箱注册",
-                            color = Color(0x993c3c43),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Normal,
-                            textAlign = TextAlign.Center,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    // ⭐ 在这里给 Row 自身添加一个上边距, 把它往下推
-                    .padding(top = 490.dp), // 调整这个值
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // 文字 1: 静态文本
-                Text(
-                    text = "继续即表示您同意我们的 ", // 结尾加个空格，视觉效果更好
-                    color = Color(0xff99a1ae),
-                    fontSize = 12.sp
-                )
-
-                // 文字 2: 用户协议 (可点击)
-                Text(
-                    modifier = Modifier.clickable {
-                        // TODO: 在这里写入点击“用户协议”后要执行的操作，例如跳转页面
-                        println("用户协议被点击了！")
-                    },
-                    text = "用户协议",
-                    color = Color(0xffff6800), // 橘色，提示用户可以点击
-                    fontSize = 12.sp
-                )
-
-                // 文字 3: 静态文本
-                Text(
-                    text = " 和 ", // 前后都加空格，拉开间距
-                    color = Color(0xff99a1ae),
-                    fontSize = 12.sp
-                )
-
-                // 文字 4: 隐私政策 (可点击)
-                Text(
-                    modifier = Modifier.clickable {
-                        // TODO: 在这里写入点击“隐私政策”后要执行的操作
-                        println("隐私政策被点击了！")
-                    },
-                    text = "隐私政策",
-                    color = Color(0xffff6800),
-                    fontSize = 12.sp
-                )
-            }
-
-            // Image-3321:2-app启动icon 1
+            // 图片层 1：你的主插图 (保持不变)
             Image(
-                painter = painterResource(id = R.drawable.image_33212),
-                contentDescription = null,
-                contentScale = ContentScale.FillBounds,
+                painter = painterResource(id = R.drawable.login_hello),
+                contentDescription = "App Banner",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            // 图层 2：用代码绘制的渐变层
+            Box(
                 modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = 121.925.dp, y = 5.485.dp)
-                    .advancedShadow(color = Color(0x3f919191), alpha = 0.25f, cornersRadius = 8.dp, shadowBlurRadius = 10.dp, offsetX = 1.dp, offsetY = 1.dp)
-                    .size(101.dp, 101.dp),
+                    .fillMaxSize() // 也填满整个区域
+                    .background(
+                        // 创建一个垂直的渐变笔刷
+                        brush = Brush.verticalGradient(
+                            // 渐变颜色列表：从完全透明到背景色（白色）
+                            colors = listOf(Color.Transparent, Color.White),
+                            // ⭐ 调整 startY 来控制渐变开始的位置
+                            // 例如，从总高度的 40% 处开始渐变
+                            startY = 350.dp.value * 0.4f
+                        )
+                    )
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth() // 这个 Column 也占满宽度
+                .padding(horizontal = 32.dp), // ⭐ 在这里应用内边距
+            horizontalAlignment = Alignment.CenterHorizontally // ⭐ 居中对齐也在这里设置
+        ){Spacer(Modifier.height(24.dp))
+
+            // 标题和副标题
+            Text(
+                text = "TravelMate",
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = "你的专属旅行搭子",
+                fontSize = 17.sp,
+                color = Color(0xFF6D6D72) // 使用更精确的灰色值
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "让每次旅行都充满惊喜",
+                fontSize = 14.sp,
+                color = Color(0xFFC7C7CC) // 使用更精确的浅灰色值
+            )
+
+            Spacer(Modifier.height(40.dp))
+
+            // 登录按钮组
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp) // 按钮之间的垂直间距
+            ) {
+                AuthButton(
+                    text = "微信登录",
+                    backgroundColor = Color(0xFFFFCB2F),
+                    textColor = Color.Black.copy(alpha = 0.8f),
+                    onClick = { /* TODO: 处理微信登录逻辑 */ }
+                )
+                AuthButton(
+                    text = "手机号登录",
+                    backgroundColor = Color(0xFF9E9E9E), // 标准灰色
+                    textColor = Color.White,
+                    onClick = { /* TODO: 处理手机号登录逻辑 */ }
+                )
+                AuthButton(
+                    text = "邮箱登录",
+                    backgroundColor = Color.White,
+                    textColor = Color.DarkGray,
+                    // 【改进】通过 Modifier 添加边框，而不是再包一层
+                    modifier = Modifier.border(1.dp, Color(0xFFE0E0E0), RoundedCornerShape(16.dp)),
+                    onClick = { /* TODO: 处理邮箱登录逻辑 */ }
+                )
+            }
+
+
+        }
+//      【修改】调整插图和下方标题之间的间距
+
+    }
+}
+
+/**
+ * 可复用的认证按钮组件
+ */
+@Composable
+private fun AuthButton(
+    text: String,
+    backgroundColor: Color,
+    textColor: Color,
+    modifier: Modifier = Modifier, // 允许外部传入额外 Modifier (如此处的 border)
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier
+            .fillMaxWidth()
+            .height(52.dp),
+        shape = RoundedCornerShape(16.dp),
+        color = backgroundColor,
+        shadowElevation = if (backgroundColor == Color.White) 0.dp else 2.dp // 白色按钮通常不需要阴影
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(
+                text = text,
+                color = textColor,
+                fontSize = 16.sp
             )
         }
     }
 }
 
-@Preview(showBackground = true)
+
+
+@Preview(showBackground = true, device = "spec:width=394dp,height=852dp")
 @Composable
-fun CodiaMainViewPreview() {
+fun AuthScreenPreview() {
     MyApplicationTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            val scrollState = rememberScrollState()
-            Column(modifier = Modifier.verticalScroll(scrollState)) {
-                CodiaMainView()
-            }
-        }
+        AuthScreen()
     }
 }

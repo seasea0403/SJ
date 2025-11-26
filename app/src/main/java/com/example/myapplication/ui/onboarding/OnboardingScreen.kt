@@ -328,25 +328,19 @@ fun AnimatedAnswerOptionCard(option: AnswerOption, onClick: () -> Unit) {
             // --- NEW: 图标显示逻辑 ---
             // 只有当icon不为null时，才会显示图标区域
             option.icon?.let { iconRes ->
-                // 1. 创建一个圆形的背景
-                Box(
-                    modifier = Modifier
-                        .size(40.dp) // 圆形背景的大小
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant), // 背景颜色
-                    contentAlignment = Alignment.Center
-                ) {
-                    // 2. 在背景里放置图标
-                    Icon(
-                        painter = painterResource(id = iconRes),
-                        contentDescription = null, // 因为旁边的文字已经解释了选项，这里设为null
-                        modifier = Modifier.size(24.dp), // 图标本身的大小
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant // 图标的颜色
-                    )
-                }
-                // 3. 在图标和文字之间增加间距
+                // 直接渲染图标，不再需要 Box 作为背景
+                Icon(
+                    painter = painterResource(id = iconRes),
+                    contentDescription = null, // 因为旁边的文字已经解释了选项，这里设为null
+                    modifier = Modifier.size(24.dp), // 你可以按需调整图标的大小
+                    // 如果想让图标显示其原始颜色，而不是被主题色染色，可以使用 Color.Unspecified
+                    tint = Color.Unspecified
+                )
+
+                // 在图标和文字之间增加间距
                 Spacer(Modifier.width(16.dp))
             }
+
             // --- END OF NEW SECTION ---
 
             Text(option.text, style = MaterialTheme.typography.bodyLarge)

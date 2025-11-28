@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.main.itinerary
+package com.example.myapplication.ui.main.itinerary.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,13 +38,13 @@ import com.example.myapplication.R
  * 简化的行程主页面
  */
 @Composable
-fun FoodScreen() {
+fun AttractionScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xfff9fafb))
     ) {
-        SimplifiedFoodHeader()
+        SimplifiedAttractionsHeader()
         // 统计信息卡片
         StatisticsSection()
 
@@ -67,7 +67,7 @@ fun FoodScreen() {
 }
 
 @Composable
-fun SimplifiedFoodHeader() {
+fun SimplifiedAttractionsHeader() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -112,17 +112,17 @@ private fun HeaderSection() {
             )
         }
 
-        Column(
+            Column(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = "美食列表",
+                text = "景点列表",
                 color = Color(0xff00c3d0),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "2个已预定 · 发现6家餐厅",
+                text = "5个计划 · 1个已完成",
                 color = Color(0xff00c3d0),
                 fontSize = 14.sp
             )
@@ -264,13 +264,13 @@ private fun FilterChip(
 
 @Preview(showBackground = true)
 @Composable
-fun FoodPreview() {
+fun SimplifiedAttractionsHeaderPreview() {
     MyApplicationTheme() {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            FoodScreen()
+            SimplifiedAttractionsHeader()
         }
     }
 }
@@ -644,17 +644,57 @@ private fun ActionButtons() {
 /**
  * 底部导航栏
  */
+@Composable
+fun BottomNavigationBar() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(vertical = 16.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        BottomNavItem("行程", isSelected = true)
+        BottomNavItem("搭子", isSelected = false)
+        BottomNavItem("回忆", isSelected = false)
+    }
+}
 
-//@Preview(showBackground = true)
-//@Composable
-//fun SimplifiedItineraryViewPreview() {
-//    MaterialTheme {
-//        Surface(
-//            modifier = Modifier.fillMaxSize(),
-//            color = MaterialTheme.colorScheme.background
-//        ) {
-//            AttractionScreen()
-//        }
-//    }
-//}
+/**
+ * 底部导航项
+ */
+@Composable
+private fun BottomNavItem(text: String, isSelected: Boolean) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // 这里应该使用图标
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.LightGray, RoundedCornerShape(8.dp))
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Text(
+            text = text,
+            color = if (isSelected) Color(0xff00c3d0) else Color(0xff99a1ae),
+            fontSize = 12.sp
+        )
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun SimplifiedItineraryViewPreview() {
+    MaterialTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            AttractionScreen()
+        }
+    }
+}
 

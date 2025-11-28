@@ -13,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
-import com.example.myapplication.ui.main.companion.CompanionScreen
 import com.example.travelapp.BottomNavItem
 import com.example.travelapp.BottomNavigationBar
 import com.example.travelapp.TodayItinerary
@@ -66,10 +65,10 @@ fun MainScreen(navController: NavController) {
                 composable("trip_route") {
                     TodayItinerary()
                 }
-                composable("buddy_route") {
-                    // 创建搭子页面
-                    CompanionScreen()
-                }
+//                composable("buddy_route") {
+//                    // 创建搭子页面
+//                    CompanionScreen()
+//                }
                 composable("note_route") {
                     // 创建随记页面
                     NoteScreen()

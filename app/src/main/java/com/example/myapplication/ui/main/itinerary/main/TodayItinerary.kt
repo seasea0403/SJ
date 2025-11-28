@@ -1,6 +1,5 @@
 package com.example.travelapp // 请替换成你的实际包名
 
-import android.R.attr.icon
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -10,9 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
-import com.example.myapplication.ui.main.itinerary.BottomNavigationBar
 
 import com.example.myapplication.ui.main.itinerary.data.DiscoveryItem
 import com.example.myapplication.ui.main.itinerary.data.QuickAccessItem
@@ -40,7 +35,6 @@ import com.example.myapplication.ui.main.itinerary.data.TripItem
 import com.example.myapplication.ui.main.itinerary.data.TripStatus
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.main.itinerary.data.MockData
-import com.example.myapplication.ui.onboarding.GeneratingPage
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 

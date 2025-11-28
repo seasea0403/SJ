@@ -1,7 +1,9 @@
 package com.example.myapplication.ui.main.itinerary
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,23 +15,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.myapplication.ui.onboarding.GeneratingPage
+import com.example.myapplication.ui.main.itinerary.data.Attraction
+import com.example.myapplication.ui.main.itinerary.data.AttractionStatus
+import com.example.myapplication.ui.main.itinerary.data.CrowdLevel
+import com.example.myapplication.ui.main.itinerary.data.dummyAttractions
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import com.example.myapplication.ui.theme.MyApplicationTheme
-
+import com.example.myapplication.R
 /**
  * 简化的行程主页面
  */
 @Composable
-fun SimplifiedItineraryView() {
+fun AttractionScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xfff9fafb))
     ) {
+        SimplifiedAttractionsHeader()
         // 统计信息卡片
         StatisticsSection()
 
@@ -51,6 +66,214 @@ fun SimplifiedItineraryView() {
     }
 }
 
+@Composable
+fun SimplifiedAttractionsHeader() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(0xfff9fafb))
+            .padding(horizontal = 24.dp, vertical = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        // 标题区域
+        HeaderSection()
+
+        // 搜索区域
+        SearchSection()
+
+        // 筛选标签区域
+        FilterSection()
+    }
+}
+
+/**
+ * 标题区域
+ */
+@Composable
+private fun HeaderSection() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // 返回按钮占位
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .background(Color.White, RoundedCornerShape(8.dp))
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.nav_back), // 替换为你的图标资源
+                contentDescription = "图标描述", // 可访问性描述
+                modifier = Modifier
+                    .fillMaxSize() // 填充整个Box
+                    .padding(8.dp), // 添加内边距，让图标小一点
+                contentScale = ContentScale.Fit // 保持比例适应
+            )
+        }
+
+            Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = "景点列表",
+                color = Color(0xff00c3d0),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "5个计划 · 1个已完成",
+                color = Color(0xff00c3d0),
+                fontSize = 14.sp
+            )
+        }
+    }
+}
+
+/**
+ * 搜索区域
+ */
+@Composable
+private fun SearchSection() {
+    val searchText = remember { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(36.dp)
+    ) {
+        // 搜索框背景
+
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White.copy(alpha = 0.9f), RoundedCornerShape(14.dp))
+                .clip(RoundedCornerShape(14.dp))
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // 搜索图标占位
+            Box(
+                modifier = Modifier
+                    .size(20.dp)
+                    .background(Color.White, RoundedCornerShape(4.dp))
+            ){
+                Image(
+                    painter = painterResource(id = R.drawable.nav_search), // 替换为你的图标资源
+                    contentDescription = "图标描述", // 可访问性描述
+                    modifier = Modifier
+                        .fillMaxSize() // 填充整个Box
+                        .padding(1.dp), // 添加内边距，让图标小一点
+                    contentScale = ContentScale.Fit // 保持比例适应
+                )
+            }
+
+            BasicTextField(
+                value = searchText.value,
+                onValueChange = { searchText.value = it },
+                modifier = Modifier.weight(1f),
+                textStyle = TextStyle(
+                    color = Color(0xff717182),
+                    fontSize = 16.sp
+                ),
+                decorationBox = { innerTextField ->
+                    if (searchText.value.isEmpty()) {
+                        Text(
+                            text = "搜索景点...",
+                            color = Color(0xff717182),
+                            fontSize = 16.sp
+                        )
+                    }
+                    innerTextField()
+                }
+            )
+        }
+    }
+}
+
+/**
+ * 筛选标签区域
+ */
+@Composable
+private fun FilterSection() {
+    val selectedFilter = remember { mutableStateOf("全部") }
+    val filters = listOf(
+        "全部" to 6,
+        "已规划" to 5,
+        "附近" to 4
+    )
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        filters.forEach { (filter, count) ->
+            FilterChip(
+                text = "$filter ($count)",
+                isSelected = selectedFilter.value == filter,
+                onClick = { selectedFilter.value = filter }
+            )
+        }
+    }
+}
+
+/**
+ * 筛选标签组件
+ */
+@Composable
+private fun FilterChip(
+    text: String,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    val backgroundColor = if (isSelected) {
+        Color(0xff00c3d0)
+    } else {
+        Color.White.copy(alpha = 0.6f)
+    }
+
+    val textColor = if (isSelected) {
+        Color.White
+    } else {
+        Color(0xff00c3d0)
+    }
+
+    Box(
+        modifier = Modifier
+            .background(backgroundColor, RoundedCornerShape(14.dp))
+            .clip(RoundedCornerShape(14.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            color = textColor,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SimplifiedAttractionsHeaderPreview() {
+    MyApplicationTheme() {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            SimplifiedAttractionsHeader()
+        }
+    }
+}
 /**
  * 统计信息区域
  */
@@ -59,7 +282,7 @@ private fun StatisticsSection() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         StatItem(
@@ -137,8 +360,14 @@ private fun AttractionCard(attraction: Attraction) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
-                    .background(Color.Gray) // 这里应该用实际图片
             ) {
+                Image(
+                    painter = painterResource(id = attraction.image), // 使用 painterResource 加载图片
+                    contentDescription = "景点图片", // 可访问性描述
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop // 图片缩放方式
+                )
+
                 // 状态标签
                 StatusBadge(
                     status = attraction.status,
@@ -416,7 +645,7 @@ private fun ActionButtons() {
  * 底部导航栏
  */
 @Composable
-private fun BottomNavigationBar() {
+fun BottomNavigationBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -455,79 +684,6 @@ private fun BottomNavItem(text: String, isSelected: Boolean) {
     }
 }
 
-// 数据模型
-data class Attraction(
-    val name: String,
-    val type: String,
-    val description: String,
-    val rating: String,
-    val distance: String,
-    val duration: String,
-    val price: String,
-    val tags: List<String>,
-    val status: AttractionStatus,
-    val time: String,
-    val crowdLevel: CrowdLevel,
-    val crowdPercentage: String
-)
-
-enum class AttractionStatus(val displayName: String) {
-    IN_PROGRESS("进行中"),
-    PLANNED("计划中"),
-    COMPLETED("已完成")
-}
-
-enum class CrowdLevel(val displayName: String) {
-    HIGH("拥挤"),
-    MEDIUM("适中"),
-    LOW("空闲")
-}
-
-// 示例数据
-private val dummyAttractions = listOf(
-    Attraction(
-        name = "故宫博物院",
-        type = "历史文化",
-        description = "明清两代的皇家宫殿，世界五大宫之首",
-        rating = "4.8 (125.0k)",
-        distance = "0.8公里",
-        duration = "3-4小时",
-        price = "60元",
-        tags = listOf("必游", "世界遗产", "历史"),
-        status = AttractionStatus.IN_PROGRESS,
-        time = "10:30",
-        crowdLevel = CrowdLevel.HIGH,
-        crowdPercentage = "75%"
-    ),
-    Attraction(
-        name = "南锣鼓巷",
-        type = "历史街区",
-        description = "北京最古老的街区之一，充满老北京风情",
-        rating = "4.5 (67.0k)",
-        distance = "2.5公里",
-        duration = "2-3小时",
-        price = "0元",
-        tags = listOf("胡同", "文艺", "美食"),
-        status = AttractionStatus.PLANNED,
-        time = "15:00",
-        crowdLevel = CrowdLevel.MEDIUM,
-        crowdPercentage = "45%"
-    ),
-    Attraction(
-        name = "王府井步行街",
-        type = "商业街区",
-        description = "北京最繁华的商业街，小吃和购物天堂",
-        rating = "4.6 (82.0k)",
-        distance = "1.8公里",
-        duration = "2-3小时",
-        price = "0元",
-        tags = listOf("购物", "夜景", "小吃"),
-        status = AttractionStatus.PLANNED,
-        time = "19:30",
-        crowdLevel = CrowdLevel.HIGH,
-        crowdPercentage = "70%"
-    )
-)
 
 @Preview(showBackground = true)
 @Composable
@@ -537,7 +693,7 @@ fun SimplifiedItineraryViewPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            SimplifiedItineraryView()
+            AttractionScreen()
         }
     }
 }

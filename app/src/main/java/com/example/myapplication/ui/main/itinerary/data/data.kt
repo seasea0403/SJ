@@ -32,3 +32,35 @@ data class QuickAccessItem(
     val label: String,
     val route: String // 点击后的路由
 )
+
+//景点页面数据
+// 数据模型
+data class Attraction(
+    val name: String,
+    val type: String,
+    val description: String,
+    val rating: String,
+    val distance: String,
+    val duration: String,
+    val price: String,
+    val tags: List<String>,
+    val status: AttractionStatus,
+    val time: String,
+    val crowdLevel: CrowdLevel,
+    val crowdPercentage: String,
+    val image: Int
+)
+
+enum class AttractionStatus(val displayName: String) {
+    IN_PROGRESS("进行中"),
+    PLANNED("计划中"),
+    COMPLETED("已完成")
+}
+
+enum class CrowdLevel(val displayName: String) {
+    HIGH("拥挤"),
+    MEDIUM("适中"),
+    LOW("空闲")
+}
+
+

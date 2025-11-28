@@ -1,5 +1,7 @@
 package com.example.travelapp // 请替换成你的实际包名
 
+import android.R.attr.icon
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,6 +15,10 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,12 +27,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.myapplication.R
 
 import com.example.myapplication.ui.main.itinerary.data.DiscoveryItem
 import com.example.myapplication.ui.main.itinerary.data.QuickAccessItem
@@ -38,8 +47,108 @@ import com.example.myapplication.ui.onboarding.GeneratingPage
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+data class BottomNavItem(
+    val name: String,
+    val route: String,
+    val icon: Int // 使用Int来引用drawable资源ID
+)
+
 @Composable
-fun TodayItinerary() {
+fun MainScreen() {
+    val navController = rememberNavController() // 用于导航功能，这里先声明
+
+    // 底部导航栏的各项
+    val items = listOf(
+        BottomNavItem(
+            name = stringResource(R.string.nav_trip),
+            route = "trip_route",
+            icon = R.drawable.nav_1 // 替换成你的行程图标
+        ),
+        BottomNavItem(
+            name = stringResource(R.string.nav_buddy),
+            route = "buddy_route",
+            icon = R.drawable.nav_2 // 替换成你的搭子图标
+        ),
+        BottomNavItem(
+            name = stringResource(R.string.nav_note),
+            route = "note_route",
+            icon = R.drawable.nav_3 // 替换成你的随记图标
+        )
+    )
+
+    // Scaffold 是 Material Design 布局结构的基础组件
+    Scaffold(
+        bottomBar = { // bottomBar 参数就是用来放置底部导航栏的
+            BottomNavigationBar(
+                items = items,
+                navController = navController,
+                // Uncomment this when you implement actual navigation in NavHost
+                // onItemClick = { item ->
+                //     navController.navigate(item.route) {
+                //         popUpTo(navController.graph.startDestinationId)
+                //         launchSingleTop = true
+                //     }
+                // }
+                // For now, we'll just print a log for demonstration
+                onItemClick = { item ->
+                    println("Navigating to: ${item.route}")
+                }
+            )
+        }
+    ) { paddingValues -> // paddingValues 会自动提供 Scafflod 内部内容的边距
+        // 这里放置你的主屏幕内容，例如 TodayItinerary 页面
+        // 记得给内容应用 paddingValues, 以免被底部导航栏遮挡
+        Box(modifier = Modifier.padding(paddingValues)) {
+            TodayItinerary() // 假设这是你的“今日行程”页面 Composable
+            // 在实际应用中，这里会是 NavHost，根据当前路由显示不同页面
+            // NavHost(navController = navController, startDestination = "trip_route") {
+            //     composable("trip_route") { TodayItinerary() }
+            //     composable("buddy_route") { BuddyScreen() }
+            //     composable("note_route") { NoteScreen() }
+            // }
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationBar(
+    items: List<BottomNavItem>,
+    navController: NavController,
+    onItemClick: (BottomNavItem) -> Unit
+) {
+    val currentRoute = navController.currentDestination?.route
+
+    NavigationBar(
+        modifier = Modifier.fillMaxWidth(),
+        containerColor = MaterialTheme.colorScheme.surfaceVariant
+    ) {
+        items.forEach { item ->
+            NavigationBarItem(
+                selected = currentRoute == item.route,
+                onClick = { onItemClick(item) },
+                icon = {
+                    Icon(
+                        painter = painterResource(id = item.icon),
+                        contentDescription = item.name,
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                label = {
+                    Text(text = item.name, style = MaterialTheme.typography.labelSmall)
+                },
+                alwaysShowLabel = true,
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            )
+        }
+    }
+}
+@Composable
+fun TodayItinerary(modifier: Modifier = Modifier) {
     // 使用 LazyColumn 来实现页面的可滚动性，因为它包含长列表项
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -303,7 +412,7 @@ fun TripItemCard(tripItem: TripItem) {
             // 使用不同状态显示对应颜色的小圆点
             Box(
                 modifier = Modifier
-                    .size(12.dp)
+                    .size(20.dp)
                     .clip(CircleShape)
                     .background(
                         when (tripItem.status) {
@@ -362,7 +471,7 @@ fun TripItemCard(tripItem: TripItem) {
                             color = if (tripItem.status == TripStatus.COMPLETED) Color.Gray else LocalContentColor.current
                         )
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
+                    Spacer(modifier = Modifier.height(15.dp))
                     Text(
                         text = "📍 ${tripItem.location}",
 
@@ -456,16 +565,16 @@ fun DiscoveryCard(item: DiscoveryItem) {
                     overflow = TextOverflow.Ellipsis
                 )
             }
-//            // 图片
-//            AsyncImage(
-//                model = item.imageUrl,
-//                contentDescription = item.title,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(180.dp)
-//                    .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)),
-//                contentScale = ContentScale.Crop,
-//            )
+            // 图片
+            Image(
+                painter = painterResource(id = item.imageUrl),
+                contentDescription = null, // 请提供适当的描述
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .clip(RoundedCornerShape(bottomStart = 12.dp, bottomEnd = 12.dp)),
+                contentScale = ContentScale.Crop
+            )
         }
     }
 }

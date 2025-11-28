@@ -22,7 +22,7 @@ object MockData {
     val discoveryItems = listOf(
         DiscoveryItem(
             type = "搭子",
-            title = "你的搭子发现：这是太和殿的容易",
+            title = "你的搭子发现：这是太和殿的脊兽",
             description = "一共有10个哦！它们代表了皇权的至高无上...",
             imageUrl = R.drawable.image_1  // 替换为实际图片URL
         ),

@@ -26,9 +26,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // ✅ 直接调用 LoginScreen，不再用任何东西包裹它
                     // LoginScreen 自己会负责自己的滚动
-                    OnboardingScreen(onOnboardingComplete = {})
+                    AppNavigation()
                 }
             }
         }

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
     alias(libs.plugins.hilt.android)
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23"
 }
 
 android {
@@ -75,4 +76,13 @@ dependencies {
     implementation(libs.hilt.android)
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0") // 请使用官方推荐的最新版本
     kapt(libs.hilt.compiler)
+    // Jetpack DataStore (推荐用于存储单个对象或简单键值对)
+    implementation("androidx.datastore:datastore:1.1.1")
+
+// 如果你想把 Kotlin 对象直接存入 DataStore，需要一个序列化库。Kotlinx Serialization 是最佳选择。
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    // 添加这行来获取完整的 Material Design 图标集
+    implementation("androidx.compose.material:material-icons-extended-android:1.6.7")
+
 }

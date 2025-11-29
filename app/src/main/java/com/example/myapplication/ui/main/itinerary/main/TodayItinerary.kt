@@ -90,7 +90,7 @@ fun MainScreen() {
         // 这里放置你的主屏幕内容，例如 TodayItinerary 页面
         // 记得给内容应用 paddingValues, 以免被底部导航栏遮挡
         Box(modifier = Modifier.padding(paddingValues)) {
-            TodayItinerary() // 假设这是你的“今日行程”页面 Composable
+            ItineraryScreen()// 假设这是你的“今日行程”页面 Composable
             // 在实际应用中，这里会是 NavHost，根据当前路由显示不同页面
             // NavHost(navController = navController, startDestination = "trip_route") {
             //     composable("trip_route") { TodayItinerary() }
@@ -139,7 +139,7 @@ fun BottomNavigationBar(
     }
 }
 @Composable
-fun TodayItinerary(modifier: Modifier = Modifier) {
+fun ItineraryScreen(modifier: Modifier = Modifier) {
     // 使用 LazyColumn 来实现页面的可滚动性，因为它包含长列表项
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -576,6 +576,6 @@ fun DiscoveryCard(item: DiscoveryItem) {
 @Composable
 fun GeneratingPagePreview() {
     MyApplicationTheme {
-        TodayItinerary()
+        ItineraryScreen()
     }
 }

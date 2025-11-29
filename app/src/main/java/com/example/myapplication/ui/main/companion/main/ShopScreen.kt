@@ -26,7 +26,7 @@ import com.example.myapplication.ui.main.itinerary.main.BottomNavigationBar
  * 重构后的兑换商店页面
  */
 @Composable
-fun CodiaMainView() {
+fun ShopScreen() {
     val categories = listOf("全部", "服装", "道具", "特殊")
     val selectedCategory = remember { mutableStateOf("全部") }
 
@@ -571,6 +571,6 @@ enum class ProductStatus {
 @Composable
 fun CodiaMainViewPreview() {
     MyApplicationTheme(){
-        CodiaMainView()
+        ShopScreen()
     }
 }

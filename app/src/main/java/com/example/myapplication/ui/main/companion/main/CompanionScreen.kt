@@ -364,7 +364,7 @@ private fun FeatureMenuItem(
 
 @Preview(showBackground = true)
 @Composable
-fun CodiaMainViewPreview() {
+fun CodiaMainViewPreview1() {
     MyApplicationTheme() {
         CompanionScreen()
     }

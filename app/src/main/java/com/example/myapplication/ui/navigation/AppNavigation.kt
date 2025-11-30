@@ -109,7 +109,7 @@ fun MainNavHost(navController: NavHostController) {
     ) {
         // 行程页面
         composable(BottomNavRoute.Itinerary.route) {
-            ItineraryScreen()
+            ItineraryScreen(navController = navController)
         }
 
         // 搭子页面

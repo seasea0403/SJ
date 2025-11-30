@@ -28,7 +28,7 @@ import com.example.myapplication.ui.theme.MyApplicationTheme
  * 简化的步数统计页面
  */
 @Composable
-fun SimplifiedStepsView() {
+fun PaceScreen() {
     val selectedTimeRange = remember { mutableStateOf("今日") }
     val timeRanges = listOf("今日", "本周", "本月")
 
@@ -79,8 +79,6 @@ fun SimplifiedStepsView() {
             }
         }
 
-        // 底部导航栏
-        BottomNavigationBar()
     }
 }
 
@@ -601,7 +599,7 @@ fun SimplifiedStepsViewPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            SimplifiedStepsView()
+            PaceScreen()
         }
     }
 }

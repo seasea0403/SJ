@@ -28,43 +28,65 @@ import com.example.myapplication.ui.main.itinerary.main.BottomNavigationBar
  */
 @Composable
 fun CompanionScreen() {
-    // 弹窗状态管理
     val bottomSheetState = rememberBottomSheetState()
 
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 10.dp)
-        ) {
-            // 顶部用户信息
-            UserInfoSection()
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 10.dp),
+                contentPadding = PaddingValues(bottom = 80.dp) // 为底部导航留出空间
+            ) {
+                item {
+                    // 顶部用户信息
+                    UserInfoSection()
+                }
 
-            Spacer(modifier = Modifier.height(32.dp))
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
 
-            // 宠物状态卡片
-            PetStatusCard(
-                onFeedClick = { bottomSheetState.showBottomSheet(BottomSheetType.FEEDING) },
-                onPlayClick = { bottomSheetState.showBottomSheet(BottomSheetType.PLAYING) },
-                onChatClick = { bottomSheetState.showBottomSheet(BottomSheetType.CHATTING) }
-            )
+                item {
+                    // 宠物状态卡片
+                    PetStatusCard(
+                        onFeedClick = { bottomSheetState.showBottomSheet(BottomSheetType.FEEDING) },
+                        onPlayClick = { bottomSheetState.showBottomSheet(BottomSheetType.PLAYING) },
+                        onChatClick = { bottomSheetState.showBottomSheet(BottomSheetType.CHATTING) }
+                    )
+                }
 
-            Spacer(modifier = Modifier.height(32.dp))
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
 
-            // 功能菜单
-            FeatureMenuSection()
+                item {
+                    // 功能菜单
+                    FeatureMenuSection()
+                }
 
-            Spacer(modifier = Modifier.height(32.dp))
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
+            }
 
-            // 底部导航
-            BottomNavigationBar()
+            // 底部导航栏 - 固定在底部
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .padding(horizontal = 10.dp)
+            ) {
+                BottomNavigationBar()
+            }
+
+            // 底部弹窗
+            BottomSheetContainer(state = bottomSheetState)
         }
-
-        // 底部弹窗
-        BottomSheetContainer(state = bottomSheetState)
     }
 }
 enum class BottomSheetType {
@@ -432,7 +454,7 @@ private fun UserInfoSection() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 24.dp),
+            .padding(horizontal= 16.dp, vertical = 24.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -460,7 +482,7 @@ private fun UserInfoSection() {
             Column(
                 modifier = Modifier
                     .width(90.dp)
-                    .height(56.dp)
+                    .height(60.dp)
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -500,7 +522,8 @@ private fun PetStatusCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(550.dp),
+            .height(640.dp)
+            .padding(horizontal = 16.dp),
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -515,14 +538,14 @@ private fun PetStatusCard(
                 shape = RoundedCornerShape(20.dp),
                 modifier = Modifier
                     .align(Alignment.End)
-                    .width(114.dp)
-                    .height(34.dp)
+                    .width(130.dp)
+                    .height(40.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Text(
                         text = "心情：有点小开心",
                         color = Color(0xffba6600),
-                        fontSize = 11.sp
+                        fontSize = 13.sp
                     )
                 }
             }
@@ -533,13 +556,13 @@ private fun PetStatusCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(200.dp),
+                    .height(280.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.cute_cat),
                     contentDescription = "宠物",
-                    modifier = Modifier.size(180.dp),
+                    modifier = Modifier.size(450.dp),
                     tint = Color.Unspecified
                 )
             }
@@ -585,14 +608,14 @@ private fun StatusProgressBar(label: String, value: Int, maxValue: Int, color: C
             modifier = Modifier.align(Alignment.End)
         )
         Spacer(modifier = Modifier.height(4.dp))
-//        LinearProgressIndicator(
-//            progress = value.toFloat() / maxValue,
-//            color = color,
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(8.dp),
-//            trackColor = Color.LightGray
-//        )
+        LinearProgressIndicator(
+            progress = value.toFloat() / maxValue,
+            color = color,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp),
+            trackColor = Color.LightGray
+        )
     }
 }
 
@@ -683,9 +706,6 @@ private fun FeatureMenuSection() {
             iconRes = R.drawable.com_shop,
             title = "积分商店",
             subtitle = "兑换专属装扮和道具",
-            backgroundColor = Color(0xffffcc00),
-            textColor = Color.White,
-            subtitleColor = Color(0xffffecd4),
             showArrow = true
         )
     }
@@ -717,12 +737,23 @@ private fun FeatureMenuItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(id = iconRes),
-                    contentDescription = title,
-                    modifier = Modifier.size(56.dp),
-                    tint = Color.Unspecified
-                )
+                // 添加方形灰色背景的图标容器
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .background(
+                            color = Color(0xFFF8CD23), // 灰色背景
+                            shape = RoundedCornerShape(12.dp) // 可选的圆角，如果需要方形可以去掉或设置为 0.dp
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = iconRes),
+                        contentDescription = title,
+                        modifier = Modifier.size(32.dp), // 可以调整图标大小以适应背景
+                        tint = Color.Unspecified
+                    )
+                }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
@@ -760,7 +791,6 @@ private fun FeatureMenuItem(
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable

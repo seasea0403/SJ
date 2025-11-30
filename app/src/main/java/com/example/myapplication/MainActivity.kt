@@ -12,7 +12,7 @@ import com.example.myapplication.ui.auth.LoginScreen
 import com.example.myapplication.ui.navigation.AppNavigation
 import com.example.myapplication.ui.onboarding.OnboardingScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
-import com.example.travelapp.TodayItinerary
+import com.example.travelapp.ItineraryScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,7 +25,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TodayItinerary()
                 }
             }
         }

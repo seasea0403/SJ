@@ -110,12 +110,7 @@ fun ShopScreen(onBack: () -> Unit) {
             .background(Color(0xfff9fafb))
     ) {
         // 顶部横幅
-        TopBanner(
-            points = 2450,
-            title = "兑换商店",
-            subtitle = "用积分兑换专属装扮和道具",
-            onBack = onBack
-        )
+        WardrobeHeader(onBack={})
 
         // 分类标签
         CategoryTabs(
@@ -132,102 +127,104 @@ fun ShopScreen(onBack: () -> Unit) {
             modifier = Modifier.weight(1f)
         )
 
-        // 底部导航
-        BottomNavigationBar()
     }
 }
 
 @Composable
-private fun TopBanner(
-    points: Int,
-    title: String,
-    subtitle: String,
-    onBack: () -> Unit
-) {
-    Box(
+private fun WardrobeHeader(onBack: () -> Unit) {
+    Surface(
+        color = Color(0xffffbf00),
+        shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .height(189.dp)
-            .background(Color(0xffffbf00))
+            .height(140.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 17.dp, vertical = 21.dp)
         ) {
-            // 积分显示
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.nav_whiteback),
-                    contentDescription = "返回",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(18.dp)
-                        .clickable { onBack() }
-                )
-
-                PointsDisplay(points = points)
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 标题和副标题
-            Text(
-                text = title,
-                color = Color.White,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold
+            // 返回按钮
+            Icon(
+                painter = painterResource(id = R.drawable.nav_whiteback),
+                contentDescription = "返回",
+                tint = Color.White,
+                modifier = Modifier
+                    .size(12.dp)
+                    .clickable { onBack()}
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            // 标题
+            Column(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .offset(y = 32.dp)
+            ) {
+                Text(
+                    text = "兑换商店",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
 
-            Text(
-                text = subtitle,
-                color = Color.White,
-                fontSize = 13.sp
+                Text(
+                    text = "用积分兑换专属装扮和道具",
+                    fontSize = 13.sp,
+                    color = Color.White
+                )
+            }
+
+            // 积分卡片
+            PointsCard(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(y = 17.dp)
             )
         }
     }
 }
 
 @Composable
-private fun PointsDisplay(points: Int) {
+private fun PointsCard(modifier: Modifier = Modifier) {
     Surface(
-        modifier = Modifier
-            .width(116.dp)
-            .height(68.dp),
-        shape = RoundedCornerShape(18.dp),
         color = Color(0x33ffffff),
-        //border = ButtonDefaults.outlinedButtonBorder.copy(color = Color.White)
+        shape = RoundedCornerShape(18.dp),
+        border = CardDefaults.outlinedCardBorder(),
+        modifier = modifier
+            .width(116.dp)
+            .height(68.dp)
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 11.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 20.dp, vertical = 11.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(9.dp)
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                // 积分图标
-                Text("💰", fontSize = 16.sp)
+                Icon(
+                    painter = painterResource(id = R.drawable.com_score),
+                    contentDescription = "积分",
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp)
+                )
+
+                Spacer(modifier = Modifier.width(9.dp))
+
                 Text(
-                    text = points.toString(),
-                    color = Color.White,
+                    text = "2450",
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White
                 )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
-
             Text(
                 text = "我的积分",
-                color = Color.White,
-                fontSize = 13.sp
+                fontSize = 14.sp,
+                color = Color.White
             )
         }
     }
@@ -242,7 +239,7 @@ private fun CategoryTabs(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 24.dp),
+            .padding(horizontal = 24.dp, vertical = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         categories.forEach { category ->
@@ -269,7 +266,7 @@ private fun CategoryTab(
         onClick = onClick,
         modifier = Modifier
             .height(43.dp)
-            .width(100.dp),
+            .width(80.dp),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = backgroundColor,
             contentColor = textColor
@@ -279,7 +276,7 @@ private fun CategoryTab(
     ) {
         Text(
             text = text,
-            fontSize = 16.sp
+            fontSize = 14.sp
         )
     }
 }
@@ -302,114 +299,116 @@ private fun ProductList(
 
 @Composable
 private fun ProductCard(product: Product) {
-    val borderColor = when (product.status) {
-        ProductStatus.AVAILABLE -> if (product.isHot) Color(0xffffd6a7) else Color(0xfff2f4f6)
-        ProductStatus.REDEEMED -> Color(0xffb8f7cf)
-    }
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(140.dp),
+            .height(150.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        //border = CardDefaults.outlinedCardBorder.copy(color = borderColor)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            // 商品图片区域
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xfff3f4f6)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = product.iconResId),
-                    contentDescription = "商品图片",
-                    modifier = Modifier.size(180.dp),
-                    tint = Color.Unspecified
-                )
+            // 热门标签 - 放在右上角
+            if (product.isHot) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-8).dp, y = 8.dp) // 稍微偏移，使其部分超出卡片边界
+                ) {
+                    HotTag()
+                }
             }
 
-            // 商品信息
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                // 商品名称和热门标签
-                if (product.isHot) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = product.name,
-                            color = Color(0xff101727),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.weight(1f)
-                        )
+            // 已兑换标签 - 放在右上角（如果商品已兑换）
+            if (product.status == ProductStatus.REDEEMED) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-8).dp, y = 8.dp)
+                ) {
+                    RedeemedTag()
+                }
+            }
 
-                        HotTag()
-                    }
-                } else {
+            // 主要内容
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // 商品图片区域
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xfff3f4f6)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = product.iconResId),
+                        contentDescription = "商品图片",
+                        modifier = Modifier.size(180.dp),
+                        tint = Color.Unspecified
+                    )
+                }
+
+                // 商品信息
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    // 商品名称（移除原来的热门标签行）
                     Text(
                         text = product.name,
                         color = Color(0xff101727),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )
-                }
 
-                // 商品描述
-                Text(
-                    text = product.description,
-                    color = Color(0xff697282),
-                    fontSize = 11.sp,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                // 属性加成
-                if (product.moodBonus > 0 || product.energyBonus > 0) {
-                    val bonusText = buildString {
-                        if (product.energyBonus > 0) append("+${product.energyBonus}活力 ")
-                        if (product.moodBonus > 0) append("+${product.moodBonus}心情")
-                    }
+                    // 商品描述
                     Text(
-                        text = bonusText.trim(),
-                        color = Color(0xff495565),
-                        fontSize = 12.sp
+                        text = product.description,
+                        color = Color(0xff697282),
+                        fontSize = 11.sp,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
+
+                    // 属性加成
+                    if (product.moodBonus > 0 || product.energyBonus > 0) {
+                        val bonusText = buildString {
+                            if (product.energyBonus > 0) append("+${product.energyBonus}活力 ")
+                            if (product.moodBonus > 0) append("+${product.moodBonus}心情")
+                        }
+                        Text(
+                            text = bonusText.trim(),
+                            color = Color(0xff495565),
+                            fontSize = 12.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // 积分和状态
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        PointsBadge(points = product.points)
+
+                        StatusText(status = product.status)
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // 积分和状态
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    PointsBadge(points = product.points)
-
-                    StatusText(status = product.status)
+                // 兑换按钮
+                ExchangeButton(status = product.status) {
+                    // 兑换操作
                 }
             }
-
-            // 兑换按钮
-            ExchangeButton(status = product.status) {
-                // 兑换操作
-            }
-        }
-
-        // 已兑换标签
-        if (product.status == ProductStatus.REDEEMED) {
-            RedeemedTag()
         }
     }
 }
@@ -418,13 +417,15 @@ private fun ProductCard(product: Product) {
 private fun HotTag() {
     Surface(
         modifier = Modifier.wrapContentSize(),
-        shape = RoundedCornerShape(26271900.dp), // 胶囊形状
-        color = Color(0xff00c3d0)
+        shape = RoundedCornerShape(8.dp), // 使用正常的圆角，而不是极大的值
+        color = Color(0xff00c3d0),
+        shadowElevation = 2.dp // 添加阴影使其更突出
     ) {
         Text(
             text = "热门商品",
             color = Color.White,
             fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
         )
     }

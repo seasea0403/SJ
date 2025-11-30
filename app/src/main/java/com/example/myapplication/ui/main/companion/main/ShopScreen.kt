@@ -1,7 +1,7 @@
 package com.example.myapplication.ui.main.companion.main
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,7 +25,7 @@ import com.example.myapplication.ui.main.itinerary.main.BottomNavigationBar
  * 重构后的兑换商店页面
  */
 @Composable
-fun ShopScreen() {
+fun ShopScreen(onBack: () -> Unit) {
     val categories = listOf("全部", "服装", "道具", "特殊")
     val selectedCategory = remember { mutableStateOf("全部") }
 
@@ -114,7 +113,8 @@ fun ShopScreen() {
         TopBanner(
             points = 2450,
             title = "兑换商店",
-            subtitle = "用积分兑换专属装扮和道具"
+            subtitle = "用积分兑换专属装扮和道具",
+            onBack = onBack
         )
 
         // 分类标签
@@ -141,7 +141,8 @@ fun ShopScreen() {
 private fun TopBanner(
     points: Int,
     title: String,
-    subtitle: String
+    subtitle: String,
+    onBack: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -160,10 +161,14 @@ private fun TopBanner(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                IconButton(onClick = { /* 返回操作 */ }) {
-                    // 这里应该是返回图标
-                    Text("←", color = Color.White)
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.nav_whiteback),
+                    contentDescription = "返回",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(18.dp)
+                        .clickable { onBack() }
+                )
 
                 PointsDisplay(points = points)
             }
@@ -571,6 +576,6 @@ enum class ProductStatus {
 @Composable
 fun CodiaMainViewPreview() {
     MyApplicationTheme(){
-        ShopScreen()
+        ShopScreen(onBack = {})
     }
 }

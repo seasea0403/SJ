@@ -6,14 +6,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -24,8 +20,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.ui.auth.LoginScreen
 import com.example.myapplication.ui.onboarding.OnboardingScreen
 import com.example.myapplication.R
+import com.example.myapplication.ui.main.companion.main.AchievementScreen
 import com.example.myapplication.ui.main.memories.TripScreen
 import com.example.myapplication.ui.main.companion.main.CompanionScreen
+import com.example.myapplication.ui.main.companion.main.ShopScreen
+import com.example.myapplication.ui.main.companion.main.WearScreen
 import com.example.travelapp.ItineraryScreen
 
 // 定义主应用的路由
@@ -114,16 +113,34 @@ fun MainNavHost(navController: NavHostController) {
 
         // 搭子页面
         composable(BottomNavRoute.Buddies.route) {
-            CompanionScreen()
+            CompanionScreen(navController = navController)
         }
 
-        // 回忆页面 - 使用您之前创建的 CodiaMainView
+        // 回忆页面
         composable(BottomNavRoute.Memories.route) {
-            TripScreen()
+            TripScreen(navController = navController)
+        }
+
+        // 添加三个新页面路由
+        composable("achievement") {
+            AchievementScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("wear") {
+            WearScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable("shop") {
+            ShopScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }
-
 /**
  * 主应用底部导航栏
  */

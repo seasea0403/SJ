@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.main.itinerary.main.BottomNavigationBar
@@ -24,7 +25,7 @@ import com.example.myapplication.ui.main.itinerary.main.BottomNavigationBar
  * 简洁版行程页面
  */
 @Composable
-fun TripScreen() {
+fun TripScreen(navController: NavHostController) {
     val trips = listOf(
         Trip(
             id = 1,
@@ -461,10 +462,10 @@ data class Trip(
     val imageRes: Int
 )
 
-@Preview(showBackground = true)
-@Composable
-fun CodiaMainViewPreview2() {
-    MyApplicationTheme() {
-        TripScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun CodiaMainViewPreview2() {
+//    MyApplicationTheme() {
+//        TripScreen()
+//    }
+//}

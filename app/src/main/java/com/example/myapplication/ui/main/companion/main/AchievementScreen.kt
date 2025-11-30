@@ -29,7 +29,7 @@ import com.example.myapplication.ui.main.itinerary.main.BottomNavigationBar
  * 简化版任务成就页面
  */
 @Composable
-fun AchievementScreen() {
+fun AchievementScreen(onBack: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xfff9fafb)
@@ -38,19 +38,16 @@ fun AchievementScreen() {
             modifier = Modifier.fillMaxSize()
         ) {
             // 顶部标题栏
-            HeaderSection()
+            HeaderSection(onBack = {})
 
             // 内容区域
             ContentSection()
-
-            // 底部导航栏
-            BottomNavigationBar()
         }
     }
 }
 
 @Composable
-private fun HeaderSection() {
+private fun HeaderSection(onBack: () -> Unit) {  // 添加 onBack 参数
     Surface(
         color = Color(0xffffbf00),
         modifier = Modifier
@@ -63,11 +60,14 @@ private fun HeaderSection() {
                 .padding(start = 17.dp, top = 21.dp, end = 24.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // 添加点击事件的返回图标
             Icon(
                 painter = painterResource(id = R.drawable.nav_whiteback),
                 contentDescription = "返回",
                 tint = Color.White,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier
+                    .size(18.dp)
+                    .clickable { onBack() }  // 添加点击事件
             )
 
             Text(
@@ -569,6 +569,6 @@ data class AchievementWallItem(
 @Composable
 fun AchievementScreenPreview() {
     MyApplicationTheme {
-        AchievementScreen()
+        AchievementScreen(onBack = {})
     }
 }

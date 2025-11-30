@@ -2,6 +2,7 @@ package com.example.myapplication.ui.main.companion.main
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -20,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.ui.main.itinerary.main.BottomNavigationBar
@@ -27,7 +30,7 @@ import com.example.myapplication.ui.main.itinerary.main.BottomNavigationBar
  * 简洁版搭子主页面
  */
 @Composable
-fun CompanionScreen() {
+fun CompanionScreen(navController: NavHostController ) {
     val bottomSheetState = rememberBottomSheetState()
 
     Surface(
@@ -65,7 +68,7 @@ fun CompanionScreen() {
 
                 item {
                     // 功能菜单
-                    FeatureMenuSection()
+                    FeatureMenuSection(navController = navController)
                 }
 
                 item {
@@ -684,29 +687,39 @@ private fun PetActionButton(
 }
 
 
+
 @Composable
-private fun FeatureMenuSection() {
+private fun FeatureMenuSection(navController: NavHostController?) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         FeatureMenuItem(
-            iconRes = R.drawable.hea_com,
+            iconRes = R.drawable.hea_com, // 替换为实际图标
             title = "任务与成就",
             subtitle = "3 个任务进行中",
-            badgeCount = 3
+            badgeCount = 3,
+            onClick = {
+                navController?.navigate("achievement")
+            }
         )
         FeatureMenuItem(
-            iconRes = R.drawable.com_cloth,
+            iconRes = R.drawable.com_cloth, // 替换为实际图标
             title = "装扮衣柜",
             subtitle = "8 件装扮可用",
-            showArrow = true
+            showArrow = true,
+            onClick = {
+                navController?.navigate("wear")
+            }
         )
         FeatureMenuItem(
-            iconRes = R.drawable.com_shop,
+            iconRes = R.drawable.com_shop, // 替换为实际图标
             title = "积分商店",
             subtitle = "兑换专属装扮和道具",
-            showArrow = true
+            showArrow = true,
+            onClick = {
+                navController?.navigate("shop")
+            }
         )
     }
 }
@@ -720,12 +733,15 @@ private fun FeatureMenuItem(
     textColor: Color = Color(0xff101727),
     subtitleColor: Color = Color(0xff697282),
     badgeCount: Int? = null,
-    showArrow: Boolean = false
+    showArrow: Boolean = false,
+    onClick: () -> Unit = {}
 ) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = backgroundColor),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
     ) {
         Row(
             modifier = Modifier
@@ -737,20 +753,19 @@ private fun FeatureMenuItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 添加方形灰色背景的图标容器
                 Box(
                     modifier = Modifier
                         .size(56.dp)
                         .background(
-                            color = Color(0xFFF8CD23), // 灰色背景
-                            shape = RoundedCornerShape(12.dp) // 可选的圆角，如果需要方形可以去掉或设置为 0.dp
+                            color = Color(0xFFF8CD23),
+                            shape = RoundedCornerShape(12.dp)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         painter = painterResource(id = iconRes),
                         contentDescription = title,
-                        modifier = Modifier.size(32.dp), // 可以调整图标大小以适应背景
+                        modifier = Modifier.size(32.dp),
                         tint = Color.Unspecified
                     )
                 }
@@ -796,6 +811,7 @@ private fun FeatureMenuItem(
 @Composable
 fun CodiaMainViewPreview1() {
     MyApplicationTheme() {
-        CompanionScreen()
+        val navController = rememberNavController()
+        CompanionScreen(navController = navController)
     }
 }

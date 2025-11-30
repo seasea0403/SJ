@@ -26,7 +26,7 @@ import com.example.myapplication.ui.main.itinerary.main.BottomNavigationBar
  * 简化版装扮衣柜页面
  */
 @Composable
-fun WearScreen() {
+fun WearScreen(onBack: () -> Unit) {
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xfff9fafb)
@@ -35,7 +35,7 @@ fun WearScreen() {
             modifier = Modifier.fillMaxSize()
         ) {
             // 顶部标题栏
-            WardrobeHeader()
+            WardrobeHeader(onBack={})
 
             // 内容区域
             WardrobeContent()
@@ -43,16 +43,15 @@ fun WearScreen() {
             // 底部操作按钮
             WardrobeActions()
 
-            // 底部导航栏
-            BottomNavigationBar()
         }
     }
 }
 
 @Composable
-private fun WardrobeHeader() {
+private fun WardrobeHeader(onBack: () -> Unit) {
     Surface(
         color = Color(0xffffbf00),
+        shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp),
         modifier = Modifier
             .fillMaxWidth()
             .height(140.dp)
@@ -68,8 +67,8 @@ private fun WardrobeHeader() {
                 contentDescription = "返回",
                 tint = Color.White,
                 modifier = Modifier
-                    .size(24.dp)
-                    .align(Alignment.TopStart)
+                    .size(12.dp)
+                    .clickable { onBack()}
             )
 
             // 标题
@@ -156,7 +155,7 @@ private fun WardrobeContent() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
+            .padding(horizontal = 20.dp, vertical = 5.dp)
     ) {
         // 实时预览
         PreviewSection()
@@ -180,26 +179,30 @@ private fun PreviewSection() {
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp)
+            .height(280.dp)
+            .padding(top = 5.dp)
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            //contentAlignment = Alignment.Center
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.cloth_tshirt_cat),
                 contentDescription = "装扮预览",
-                modifier = Modifier.size(147.dp),
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .size(230.dp)
+                    .padding(top=15.dp),
                 tint = Color.Unspecified
             )
 
             Text(
-                text = "实时预览",
+                text = " 实时预览",
                 fontSize = 16.sp,
                 color = Color(0xff495565),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 20.dp)
+                    .padding(vertical = 10.dp)
             )
         }
     }
@@ -297,61 +300,68 @@ private fun ClothingCard(item: ClothingItem) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = when (item.status) {
-            ClothingStatus.EQUIPPED -> CardDefaults.outlinedCardBorder()
-            else -> null
-        },
         modifier = Modifier
             .fillMaxWidth()
             .height(170.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            // 状态标签
+            // 状态标签 - 放在右上角
             if (item.status != ClothingStatus.AVAILABLE) {
-                StatusBadge(status = item.status)
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .offset(x = (-8).dp, y = 8.dp) // 稍微偏移，使其部分超出卡片边界
+                ) {
+                    StatusBadge(status = item.status)
+                }
             }
 
-            // 服装图标
-            Icon(
-                painter = painterResource(id = item.iconRes),
-                contentDescription = item.title,
-                modifier = Modifier.size(80.dp),
-                tint = if (item.status == ClothingStatus.LOCKED) Color(0xffcccccc) else Color.Unspecified
-            )
-
-            // 服装信息
+            // 主要内容
             Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = item.title,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = if (item.status == ClothingStatus.LOCKED) Color(0xff99a1ae) else Color(0xff101727)
+                // 服装图标
+                Icon(
+                    painter = painterResource(id = item.iconRes),
+                    contentDescription = item.title,
+                    modifier = Modifier.size(80.dp),
+                    tint = if (item.status == ClothingStatus.LOCKED) Color(0xffcccccc) else Color.Unspecified
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                // 服装信息
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = "${item.points} 积分",
-                        fontSize = 14.sp,
-                        color = Color(0xffff6800)
+                        text = item.title,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (item.status == ClothingStatus.LOCKED) Color(0xff99a1ae) else Color(0xff101727)
                     )
 
-                    Text(
-                        text = "+${item.moodBonus} 心情",
-                        fontSize = 12.sp,
-                        color = Color(0xff495565)
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${item.points} 积分",
+                            fontSize = 14.sp,
+                            color = Color(0xffff6800)
+                        )
+
+                        Text(
+                            text = "+${item.moodBonus} 心情",
+                            fontSize = 12.sp,
+                            color = Color(0xff495565)
+                        )
+                    }
                 }
             }
         }
@@ -368,7 +378,8 @@ private fun StatusBadge(status: ClothingStatus) {
 
     Surface(
         color = backgroundColor,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(8.dp),
+        shadowElevation = 2.dp, // 添加一点阴影使其更突出
         modifier = Modifier
             .wrapContentWidth()
             .height(24.dp)
@@ -389,7 +400,8 @@ private fun StatusBadge(status: ClothingStatus) {
             Text(
                 text = text,
                 color = textColor,
-                fontSize = 12.sp
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium
             )
         }
     }
@@ -445,6 +457,6 @@ enum class ClothingStatus {
 @Composable
 fun WardrobeScreenPreview() {
     MyApplicationTheme() {
-        WearScreen()
+        WearScreen(onBack = {})
     }
 }
